@@ -1,0 +1,58 @@
+Answers to exercises in chapter 1
+
+1.1 Examples where machine learning is appropriate: Making products with a lot 
+of users "smarter." Stuff Google does!
+
+Examples where it is not appropriate: Systems, compilers. (not a very
+interesting question imo).
+
+1.2 Example of a learning task: Learning to classify user complaints by area
+of error, in order to quickly learn what's going on. User errors would tend to
+cluster around a problem with a certain feature. This would give some useful
+information on how systems were performing.
+
+Training experience could be already classified errors. Learner could maintain
+a dictionary of words, and try to match the existence of certain words or 
+combinations of words to certain errors. This could work well since if the words
+are technical in nature they are likely strongly correlated with the particular
+error. On the other hand this is just syntactical rather than semantic analysis,
+so it would be prone to making some really dumb errors from time to time.
+
+Target function would be a linear combination of frequency of types of words,
+and output value would determine where something lied. 
+
+
+1.3 Here's a somewhat hacky proof. The squared error E is defined as follows:
+We can think of the <b, v_TRAIN(b)> as points in the continuous function
+E = sum of (v_TRAIN(b) - v(b))^2, and so the only variable component of this 
+function is the v(b). We have the linear function v: R^n -> R, so its
+derivative wrt any x_i is just the constant w_i. Therefore del v/del w_i = x_i.
+Thus if we take del E/del w_i, we get (- v(b))*(del v/del w_i) = sum over b's 
+(-v(b))*x_i. Now the gradient descent rule updates each weight w_i 
+proportionally to x_i, so the derivative is ax_i for each weight w_i, and some 
+scalar a. Thus the derivative del E/ del w_i is proportional to the LMS update
+rule, so this is an example of gradient descent. 
+
+
+1.4 Generating random board positions - this is good because you can explore
+a great variety of strategies here. However, the tradeoff is that a lot of them
+are unlikely to actually show up in a game or be sensible ways to play, so it 
+might throw off the learner a bit.
+
+Taking an existing board position, doing a different move - this is good
+because you can generate lots of  game-like situations. However, on an intuitive
+level it doesn't make sense how exploring this space teaches the player to make
+the right move in the first place.
+
+My default strategy - Take the inverse of the stack trace in a game against an
+expert and train on those examples. Pros: you actually learn to play "against
+youself" in a sense. Can learn what a better player does. Cons: requires an 
+expert to play a lot of games against the system.
+
+1.5 See code in the local directory tictactoe. Main module is learner.py.
+
+Notes: A little hacky at some parts. Doesn't work perfectly, but every game only
+produces at most 9 training examples which isn't really enough to go off of so
+the learner seems to jump around a lot. Either way it starts to win 100% of the
+games against the default strategy fairly quickly. Probably not the best example
+of a learning system, but it's enough to get the ideas across.

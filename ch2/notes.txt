@@ -1,0 +1,114 @@
+Concept learning - inferring a boolean-valued function from examples of its 
+input and output.
+
+If some instance x satisfies all constraints of some hypothesis h, then h 
+classifies x as a positive example (h(x) = 1).
+
+Set of items over which concept is defined is called set of instances X.
+
+Concept or function to be learned is called the target concept. 
+
+When learning target concept, learning is presented with set of training 
+examples, consisting of x from X along with value c(x). Can have positive
+and neegative examples. D is set of all available training examples.
+
+Problem is to find hypothesis h out of hypothesis space H.
+
+inductive learning hypothesis - any hypothesis found to approximate the 
+target function well over a sufficiently large set of training examples
+will also approximate the target function over unobserved examples.
+
+Concept learning basically boils down to a search of the hypothesis space,
+guided by training examples. 
+
+Hypothesis h1 is more_general_than_or_equal_to h2 if for every x in X such
+that h2(x) = 1, it is also true that h1(x) = 1.
+
+Inverse is more_specific_than.
+
+Find-S algorithm:
+
+1. Initialize h to most specific hypothesis in H.
+2. For each positive training instance x.
+	 		 For each attribute constant a_i in h:
+			 		 If constraint a_i is satisfied by x: do nothing
+					 else: replace a_i in h by next more general constraint.
+3. Output hypothesis h.
+
+Ignores negative examples, since as long as there is no training data errors,
+will never have to make a revision in response to a negative example.
+
+Problems with this approach: We don't necessarily want the most specific one,
+require training examples to be consistent, can be several maximally specific
+examples.
+
+
+Candidate-Elimination:
+- outputs a set of all hypotheses consistent with training examples. 
+- accomplishes this with the more_general_than ordering.
+
+Definition - hypothesis h is consistent with set of training examples D iff
+h(x) = c(x) for each example (x, c(x)) in D.
+
+Definition - version space is the subset of hypothese of H that is consistent
+with the training examples of D.
+
+Key idea: define version space with boundaries: general boundary and 
+specific boundary.
+
+On general boundary, set of hypotheses that are maximally general and
+consistent. Ie we cannot produce a more general hypothesis that is consistent.
+
+Analogous definition for specific boundary.
+
+VS representation theorem: Any consistent hypothesis must be simultaneously
+more general than the specific boundary and more specific than the general
+boundary. 
+
+The algorithm:
+Initialize G to set of maximally general hypothesis in H.
+Initialize S to set of maximally specific hypotheses in H.
+
+For each example d:
+
+		if d is positive:
+			 Remove from G any hypothesis inconsistent with d.
+			 For each hypotheses s in S not consistent with d.
+			 		 remove s from S
+					 Add to S all minimal generalizations h of s such that
+					 		 h is consistent with d, and some member of G is more general
+							 than h.
+					 Remove from S any hypothesis more general than another hypothesis
+					 in S.
+
+		if d is negative:
+			 Remove from S any hypothesis inconsistent with d.
+			 For each hypothesis g in G not consistent with d:
+			 		 remove g from G
+					 Add to G all minimal specializations h of g such that
+					 		 h is consistent with d, and some member of S is more specifc
+							 than h.
+					 Remove from G any hypothesis less general than another hypothesis 
+					 in G.
+
+Learner should try to request training examples that match ~50% of version 
+space, to make it as small as possible.
+
+Partial learning - vote between the hypotheses in the version space.
+				- if all hypotheses equally likely, this is probability of that 
+				hypothesis being positive given training data.
+
+Inductive bias: set of assumptions so that inductive inferences can follow
+deductively.
+
+Unbiased learner can't do anything - just match against previously seen
+instances.
+
+Inductive bias of Candidate-elimination - target concept c is contained in the
+given hypothesis space H. 
+
+Inductive bias is Find-S - every example is negative unless this is contradicted
+by prior knowledge.
+
+
+

@@ -1,0 +1,119 @@
+Chapter 3 notes
+
+Each node in the tree specifies a test of some attribute of the instance, and 
+each branch descending from that node corresponds to one of the possible values
+for this attribute. 
+
+When to use trees:
+- instances are represented by attribute-value pairs - preferrably few per
+attribute
+- target function has discrete output values
+- disjunctive descriptions may be required
+- training data may contain errors
+- training data may contain missing attribute values 
+
+ID3 algorithm:
+
+Constructs decision trees top-down, with the question "which attribute 
+should be tested at the root of the tree?"
+
+Which attribute is best classifier? Use statistical property called
+information gain.
+
+Given a collection S, containing pos and neg examples, entropy of S relative
+to boolean classification is 
+
+Entropy(S) = -p_+log(p_+) - p_-(log(p_-))
+
+This is an upside-down bellshaped curve with mins at p_x = 0 and 1, and max
+at p_x = 0.5. We get most information gain if same amount of pos and neg 
+examples for the attribute, because we can reduce the space by half (most 
+possible for 2 examples). 
+
+For several possible values, it is just the sum of (-p_c)log(p_c)
+
+Information gain - expected reduction in entropy from partitioning examples
+according to an attribute.
+
+Gain(S, A) of partitioning collection S relative to attribute A equals
+
+Gain(S, A) = Entropy(S) - sum (|S_v|/|S|)*Entropy(S_v) of values v in A. 
+
+Ex. 
+
+Values(Wind) = Weak, Strong
+S = [9+, 5-]
+S_weak = [6+, 2-]
+S_strong = [3+, 3-]
+
+Gain(S, wind) = Entropy(S) - (8/14)Entropy(S_weak) - (6/14)Entropy(S_strong)
+
+Higher information gain = higher entropy of attribute A + low entropy of
+features.
+Intuitively - we want it to split as evenly as possible to make tree as shallow
+as possible...so that explains higher entropy of attribute A. At the same time,
+we want to make sure that the features have low combined entropy, because that
+means that they are already mostly determined...right? Or maybe this leads us
+to choose features with fewer choices, since those have a higher upper bound
+on information gain. 
+
+BUT - given some feature like wind, we want to split up the space as much as
+possible, because if it's a little not split then we aren't helped much. But
+after it's split a lot, we hope that these are strongly determined features.
+
+Ah no - it's the EXPECTED REDUCTION IN ENTROPY. Let's reduce entropy as much
+as possible. 
+
+Gain(S, A) is the number of bits saved when encoding the target value of an
+arbitrary member of S, by knowing the value of attribute A. 
+
+Hypothesis space search - searches full hypothesis space. Performs simple-to-
+complex hill-climbing search. 
+
+Does not backtrack
+Uses all training examples at each step in the search to make statistically 
+based decisions regarding how to refine current hypothesis - resulting search
+is less sensitive to errors in individual training examples.
+
+Approximate inductive bias - shorter trees are preferred, as well as trees that
+place high information gain attributes close to the root.
+
+Inductive bias of ID3 is a preference for certain hypotheses over others, which
+is called a preference bias/search bias.
+
+bias of candidate-elimination is a restriction of the set of hypotheses
+considered - restriction/language bias.
+
+Avoiding overfitting - h overfits data if it does better than h' on training
+data but worse on instances in general.
+
+2 general approaches to avoiding overfitting:
+- approaches taht stop growing tree earlier
+- post-pruning
+
+how to determine whether avoiding overfitting worked:
+- use separate set of examples to evaluate utilit of post-pruning
+	- training/validation sets
+- use all available data for training, but use statistical tests
+- use explicit measure of complexity for encoding
+
+How does pruning work?
+- looks at all decision nodes. Try removing subtree rooted at the node, 
+making it a leaf node, assigning most common classification of training examples
+affiliated witht that node. Do this only if it does no worse on the validation
+set.
+
+Rule post-pruning - infer decision tree from training set. Convert tree into
+equivalent set of rules, creating one rule per path. 
+Generalize each rule by removing any preconditions that result in improving
+its estimated accuracy.
+Sort pruned rules by their estimated accuracy, consider them in this sequence
+when classifying subsequent instances.
+
+Estimated accuracy calculated from validation set.
+
+
+Alternative measures for selecting attributes - we want to avoid attributes
+that have very high information gain relative to training examples, but are a 
+poor predictor of the target function over unseen instances.
+

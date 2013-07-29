@@ -1,0 +1,32 @@
+2.1
+2.2
+2.3
+2.4
+2.5
+2.6 Assume some h in VS_{H, D} does not satisfy the RHS of the equation. Since
+h is in VS_{H, D} it must be consistent with the training data, and also either
+more general than G or more specific than S. However, this contradicts the
+definition of VS_{H, D}, since any hypothesis encountered either more general
+than G or specific than S, and also consistent, would have been added to the
+boundary. Therefore h must satisfy the RHS of the equation.
+
+
+2.7 Can have no maximally specific hypothesis because if we have a < x < b we
+cannot specify any a_0, b_0, such that there is no positive number smaller
+than |a - a_0| or |b - b_0|. We could define the hypothesis space as greater
+than or equal to, to get around this.
+
+2.8 Since x is a previously unobserved instance, it does not factor into the 
+version space. For every hypothesis h in the version space that classifies x
+as positive, there is another hypothesis h' which is identical to h except
+in its classification of x. Therefore there are an equal number of positive 
+and negative votes for every instance. 
+
+2.9 Pretty simple - for each attribute, run through the positive training 
+examples and if they all match, add that to the hypothesis. If the negative
+examples unanimously have that same value for that attribute, then remove that
+attribute from the hypothesis. Return the hypothesis.
+
+for n attributes per example and d examples, this runs in O(nd).
+
+2.10 See directory find_s.
